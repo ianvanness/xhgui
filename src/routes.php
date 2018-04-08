@@ -72,6 +72,13 @@ $app->get('/run/callgraph/dot', function () use ($di, $app) {
     $di['runController']->callgraphDataDot();
 })->name('run.callgraph.dot');
 
+// Import route
+$app->post('/run/import', function () use ($di, $app) {
+    $app->controller = $di['importController'];
+    $app->controller->import();
+})->name('run.import');
+
+
 // Watch function routes.
 $app->get('/watch', function () use ($di, $app) {
     $app->controller = $di['watchController'];
