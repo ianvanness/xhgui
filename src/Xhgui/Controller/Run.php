@@ -108,6 +108,37 @@ class Xhgui_Controller_Run extends Xhgui_Controller
         ));
     }
 
+    public function delete()
+    {
+        $request = $this->app->request();
+        $id = $request->get('id');
+
+        // Delete the profile run.
+        $delete = $this->profiles->delete($id);
+
+        $this->app->flash('success', 'Deleted profile ' . $id);
+
+        $referrer = $request->getReferrer();
+        // In case route is accessed directly the referrer is not set.
+        $redirect = isset($referrer) ? $referrer : $this->app->urlFor('home');
+        $this->app->redirect($redirect);
+    }
+
+    public function deleteAll()
+    {
+        $request = $this->app->request();
+
+        // Delete all profile runs.
+        $delete = $this->profiles->truncate();
+
+        $this->app->flash('success', 'Deleted all profiles');
+
+        $referrer = $request->getReferrer();
+        // In case route is accessed directly the referrer is not set.
+        $redirect = isset($referrer) ? $referrer : $this->app->urlFor('home');
+        $this->app->redirect($redirect);
+    }
+
     public function url()
     {
         $request = $this->app->request();
@@ -282,31 +313,6 @@ class Xhgui_Controller_Run extends Xhgui_Controller
 
         $response['Content-Type'] = 'application/json';
         return $response->body(json_encode($callgraph));
-    }
-
-    public function flamegraph()
-    {
-        $request = $this->app->request();
-        $profile = $this->profiles->get($request->get('id'));
-
-        $this->_template = 'runs/flamegraph.twig';
-        $this->set(array(
-            'profile' => $profile,
-            'date_format' => $this->app->config('date.format'),
-        ));
-    }
-
-    public function flamegraphData()
-    {
-        $request = $this->app->request();
-        $response = $this->app->response();
-        $profile = $this->profiles->get($request->get('id'));
-        $metric = $request->get('metric') ?: 'wt';
-        $threshold = (float)$request->get('threshold') ?: 0.01;
-        $flamegraph = $profile->getFlamegraph($metric, $threshold);
-
-        $response['Content-Type'] = 'application/json';
-        return $response->body(json_encode($flamegraph));
     }
 
     public function callgraphDataDot()

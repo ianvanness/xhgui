@@ -30,6 +30,14 @@ $app->get('/run/view', function () use ($di, $app) {
     $app->controller->view();
 })->name('run.view');
 
+$app->get('/run/delete', function () use ($di, $app) {
+    $di['runController']->delete();
+})->name('run.delete');
+
+$app->get('/run/delete_all', function () use ($di, $app) {
+    $di['runController']->deleteAll();
+})->name('run.deleteAll');
+
 $app->get('/url/view', function () use ($di, $app) {
     $app->controller = $di['runController'];
     $app->controller->url();
@@ -58,15 +66,6 @@ $app->get('/run/callgraph', function () use ($di, $app) {
 $app->get('/run/callgraph/data', function () use ($di, $app) {
     $di['runController']->callgraphData();
 })->name('run.callgraph.data');
-
-$app->get('/run/flamegraph', function () use ($di, $app) {
-    $app->controller = $di['runController'];
-    $app->controller->flamegraph();
-})->name('run.flamegraph');
-
-$app->get('/run/flamegraph/data', function () use ($di, $app) {
-    $di['runController']->flamegraphData();
-})->name('run.flamegraph.data');
 
 $app->get('/run/callgraph/dot', function () use ($di, $app) {
     $di['runController']->callgraphDataDot();
